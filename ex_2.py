@@ -119,11 +119,11 @@ recv = [d1,d2,d3,d4,d5,d6,d7,d8] = [[0,0,0],
                                     [1,1,1]]
 
 # [1] Correct transfer probability (without (de)coding)
-p0 = p_c1*prob_d_cond_c(p,c1,c1) + \
+p1 = p_c1*prob_d_cond_c(p,c1,c1) + \
      p_c2*prob_d_cond_c(p,c2,c2) + \
      p_c3*prob_d_cond_c(p,c3,c3)
 
-print(f'p1 = {p0}\n')
+print(f'p1 = {p1}\n')
 
 # [2] Create MLD (Maximum likelihood decoding) rule
 decod_groups = calc_decoding_groups('MLD')
@@ -131,8 +131,8 @@ print("MLD rule:")
 print_decoding_groups(decod_groups)
 
 # [2.1] Correct transfer probability (using MLD)
-p1 = calc_correct_transfer_prob(decod_groups)
-print(f'p2 = {p1}\n')
+p2 = calc_correct_transfer_prob(decod_groups)
+print(f'p2 = {p2}\n')
 
 # [3] Create IOD (Ideal observer decoding) rule
 decod_groups = calc_decoding_groups('IOD')
@@ -140,8 +140,8 @@ print("IOD rule:")
 print_decoding_groups(decod_groups)
 
 # [3.1] Correct transfer probability (using IOD)
-p2 = calc_correct_transfer_prob(decod_groups)
-print(f'p3 = {p2}\n')
+p3 = calc_correct_transfer_prob(decod_groups)
+print(f'p3 = {p3}\n')
 
 # [4] Information amount transfered in a channel (without (de)coding)
 _H = H(p_codes)
