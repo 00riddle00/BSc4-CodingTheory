@@ -25,7 +25,7 @@ def H_X_cond_Y(p,d):
 # Probabilities
 # =============================
 
-# p(c|d)
+# p(c,d)
 def prob_c_and_d(p,c,d):
     c_idx = codes.index(c)
     return p_codes[c_idx] * prob_d_cond_c(p,d,c)
@@ -42,7 +42,7 @@ def prob_d_cond_c(p,d,c):
         t*=p[c[i]][d[i]]
     return t
 
-# p(c,d)
+# p(c|d)
 def prob_c_cond_d(p,c,d):
     return prob_c_and_d(p,c,d) / prob_received_d(p,d)
 
