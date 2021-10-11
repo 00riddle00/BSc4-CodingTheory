@@ -7,7 +7,7 @@ def transpose(M):
     return [[M[i][j] for i in range(len(M))] for j in range(len(M[0]))]
 
 def negative(M):
-    return [[(-1 * M[i][j]) % k  for j in range(len(M[0]))] for i in range(len(M))]
+    return [[(-1 * M[i][j]) % q  for j in range(len(M[0]))] for i in range(len(M))]
 
 def concat(M,N):
     return [M[i] + N[i] for i in range(len(M))]
@@ -18,12 +18,12 @@ def mult(M,N):
     for i in range(len(M)):
         for j in range(len(N[0])):
             for l in range(len(N)):
-                result[i][j] = (result[i][j] + M[i][l] * N[l][j]) % k
+                result[i][j] = (result[i][j] + M[i][l] * N[l][j]) % q
 
     return result
 
 def subtract_vectors(u,v):
-    return [(u[i] - v[i]) % k for i in range(len(u))]
+    return [(u[i] - v[i]) % q for i in range(len(u))]
 
 # ====================================
 # Main
@@ -36,7 +36,7 @@ text_abc = ['A', 'B', 'C', 'Č', 'D', 'E', 'Ė', 'F', 'G',
 n = 6
 q = 3
 k = 3
-k_zeroes = [[0 for i in range(k)]]
+n_minus_k_zeroes = [[0 for i in range(n-k)]]
 
 words_received = \
     [[2, 0, 2, 2, 1, 0],
@@ -106,7 +106,7 @@ for y in words_received:
     y = [y]
     s = mult(y,H_T)
 
-    if s != k_zeroes:
+    if s != n_minus_k_zeroes:
         s = s[0]
         y = y[0]
 
