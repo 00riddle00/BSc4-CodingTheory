@@ -4,10 +4,10 @@
 # ====================================
 
 def transpose(M):
-    return [[M[j][i] for j in range(len(M))] for i in range(len(M[0]))]
+    return [[M[i][j] for i in range(len(M))] for j in range(len(M[0]))]
 
 def negative(M):
-    return [[(-1 * M[i][j]) % k  for j in range(len(M))] for i in range(len(M[0]))]
+    return [[(-1 * M[i][j]) % k  for j in range(len(M[0]))] for i in range(len(M))]
 
 def concat(M,N):
     return [M[i] + N[i] for i in range(len(M))]
