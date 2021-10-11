@@ -62,7 +62,7 @@ A = [[G[0][3], G[0][4], G[0][5]],
      [G[1][3], G[1][4], G[1][5]],
      [G[2][3], G[2][4], G[2][5]]]
 
-# G = (A|I), I: matrix size: k x k = 3 x 3
+# G' = (A|I), matrix size of I: k x k = 3 x 3
 I_first = [[1, 0, 0],
            [0, 1, 0],
            [0, 0, 1]]
@@ -73,7 +73,7 @@ A_T = transpose(A)
 # matrix size: 3 x 3
 minus_A_T = negative(A_T)
 
-# H = (-A_T|I), I: matrix size: (n-k) x (n-k) = 3 x 3
+# H = (-A_T|I), matrix size of I: (n-k) x (n-k) = 3 x 3
 I_second = [[1, 0, 0],
             [0, 1, 0],
             [0, 0, 1]]
