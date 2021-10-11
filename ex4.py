@@ -52,6 +52,7 @@ words_received = \
      [0, 0, 0, 2, 0, 0],
      [0, 0, 2, 2, 1, 1]]
 
+# matrix size: k x n = 3 x 3
 G = [[1, 0, 0, 0, 2, 1],
      [0, 1, 0, 2, 2, 0],
      [0, 0, 1, 1, 0, 1]]
@@ -77,9 +78,10 @@ I_second = [[1, 0, 0],
             [0, 1, 0],
             [0, 0, 1]]
 
-# matrix size:
+# matrix size: (n-k) x n = 3 x 6
 H = concat(minus_A_T, I_second)
 
+# matrix size: n x (n-k) = 6 x 3
 H_T = transpose(H)
 
 all_zeroes = [0] * n
