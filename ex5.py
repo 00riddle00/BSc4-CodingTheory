@@ -25,6 +25,17 @@ def mult(M,N):
 def subtract_vectors(u,v):
     return [(u[i] - v[i]) % q for i in range(len(u))]
 
+# convert zs - lists of 2 elems -> to lists of 3 elems
+def conv_list_2_to_3(zs):
+    flat_zs = [item for sublist in zs for item in sublist]
+    return [flat_zs[i:i + n] for i in range(0, len(flat_zs), 3)]
+
+def print_xs():
+    for x in xs:
+        letter_index = x[0] + x[1] * 3 + x[2] * 9
+        print(text_abc[letter_index], end='')
+    print()
+
 # ====================================
 # Main
 # ====================================
@@ -36,12 +47,16 @@ text_abc = ['A', 'B', 'C', 'Č', 'D', 'E', 'Ė', 'F', 'G',
 n = 7
 q = 3
 k = 2
-k_zeroes = [[0 for i in range(k)]]
+n_minus_k_zeroes = [0] * (n-k)
 
-# '*' - deletion error
-# if there is a '*', at max there can be only one distortion error in that word
-# otherwise up to two distortion errors are possible
-words_received_1 = \
+# '*' - deletion error (max 1 in one word)
+#
+# if there is a '*', at max there can be
+# only 1 distortion error in that word
+#
+# otherwise up to 2 distortion errors are possible
+#
+words_received_part_1 = \
     [[2, 2, 1, 2, 0, 1, 1],
      [1, 1, 0, 1, 0, 1, 2],
      [1, 2, 1, 1, 1, 1, 0],
@@ -61,8 +76,8 @@ words_received_1 = \
      [2, '*', 2, 1, 2, 0, 1],
      [0, 0, 0, 0, 0, 0, 0]]
 
-# these words contain ONLY deletion errors
-words_received_2 = \
+# these words contain ONLY deletion errors (max 3 in one word)
+words_received_part_2 = \
     [[2, '*', '*', 2, 0, 2, '*'],
      [0, '*', 1, 1, '*', 2, '*'],
      [1, '*', 1, 2, '*', '*', 2],
@@ -109,3 +124,119 @@ H = concat(minus_A_T, I_second)
 
 # matrix size: n x (n-k) = 7 x 5
 H_T = transpose(H)
+
+# =====================
+# Part 1
+# =====================
+
+words_corrected = []
+xs = []
+
+e_i_control_bits = []
+
+for i in range(n-k):
+    e_i_first = n_minus_k_zeroes[:]
+    e_i_second = n_minus_k_zeroes[:]
+
+    e_i_first[i] = 1
+    e_i_second[i] = 2
+
+    e_i_control_bits.append(e_i_first)
+    e_i_control_bits.append(e_i_second)
+
+e_i_we_care = []
+
+# e_i_we_care will now contain those error words which have 1 error
+# in info bits and 1 error in control bits
+# (we don't care when both errors occur in control bits)
+for error_in_info_bits in [[0,1],[0,2],[1,0],[2,0]]:
+    for error_in_control_bits in e_i_control_bits:
+        e_i_we_care.append(error_in_info_bits + error_in_control_bits)
+
+# add the cases when 2 errors occur in info bits
+e_i_we_care.append([1,1,0,0,0,0,0])
+e_i_we_care.append([1,2,0,0,0,0,0])
+e_i_we_care.append([2,1,0,0,0,0,0])
+e_i_we_care.append([2,2,0,0,0,0,0])
+
+s_i_we_care = mult(e_i_we_care,H_T)
+
+for y in words_received_part_1:
+
+    # if there is a '*', at max there can be only
+    # 1 distortion error in that word
+    if '*' in y:
+        # we replace '*' with, say, 0, and
+        # treat this symbol as a possible error.
+        y[y.index('*')] = 0
+
+    # x = y if the word is correct OR if the
+    # error(s) was/were not in the info symbol
+    x = y
+
+    y = [y]
+    s = mult(y,H_T)
+
+    if s != [n_minus_k_zeroes]:
+        s = s[0]
+        y = y[0]
+
+        if s in s_i_we_care:
+            s_i_index = s_i_we_care.index(s)
+            e_i = e_i_we_care[s_i_index]
+
+            x = subtract_vectors(y,e_i)
+
+    words_corrected.append(x)
+    xs.append(x[:k])
+
+xs = conv_list_2_to_3(xs)
+print_xs()
+
+print('------------')
+
+# =====================
+# Part 2
+# =====================
+
+words_corrected = []
+xs = []
+
+for y in words_received_part_2:
+
+    # there are from 2 to 3 '*' symbols in a word
+    # replace every '*' with 0,1,2 to get all possible
+    # words before deletion happened
+    #
+    # if there were 2 '*', we get 3^2 = 9 words
+    # if 3 '*': 3^3 = 27 words
+    words = [[]]
+
+    for i in range(y.count('*')):
+        temp = []
+        star_index = y.index('*')
+
+        y_before_star = y[:star_index]
+        y = y[star_index+1:]
+
+        for w in words:
+            for symbol in [[0],[1],[2]]:
+                temp.append(w + y_before_star + symbol)
+
+        words = temp[:]
+
+    # add the remaining part
+    # of y to every word
+    for w in words:
+        w += y
+
+    for w in words:
+        if mult([w],H_T) == [n_minus_k_zeroes]:
+            words_corrected.append([w][0])
+            break
+
+for w in words_corrected:
+    xs.append(w[:k])
+
+xs = conv_list_2_to_3(xs)
+print_xs()
