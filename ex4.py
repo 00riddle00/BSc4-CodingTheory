@@ -84,12 +84,12 @@ H = concat(minus_A_T, I_second)
 # matrix size: n x (n-k) = 6 x 3
 H_T = transpose(H)
 
-all_zeroes = [0] * n
+n_zeroes = [0] * n
 e_i_all = []
 
 for i in range(n):
-    e_i_first = all_zeroes[:]
-    e_i_second = all_zeroes[:]
+    e_i_first = n_zeroes[:]
+    e_i_second = n_zeroes[:]
 
     e_i_first[i] = 1
     e_i_second[i] = 2
