@@ -166,26 +166,54 @@ for y in words_received_part_1:
     # if there is a '*', at max there can be only
     # 1 distortion error in that word
     if '*' in y:
-        # we replace '*' with, say, 0, and
-        # treat this symbol as a possible error.
-        y[y.index('*')] = 0
+        # we replace '*' with 0,1,2 (trying all possible scenarios)
+        star_index = y.index('*')
+        y0 = y[:]
+        y1 = y[:]
+        y2 = y[:]
 
-    # x = y if the word is correct OR if the
-    # error(s) was/were not in the info symbol
-    x = y
+        y0[star_index] = 0
+        y1[star_index] = 1
+        y2[star_index] = 2
 
-    y = [y]
-    s = mult(y,H_T)
+        ys = [y0, y1, y2]
 
-    if s != [n_minus_k_zeroes]:
-        s = s[0]
-        y = y[0]
+        for y in ys:
+            x = y
 
-        if s in s_i_we_care:
-            s_i_index = s_i_we_care.index(s)
-            e_i = e_i_we_care[s_i_index]
+            y = [y]
+            s = mult(y,H_T)
 
-            x = subtract_vectors(y,e_i)
+            if s == [n_minus_k_zeroes]:
+                break
+            else:
+                s = s[0]
+                y = y[0]
+
+                if s in s_i_we_care:
+                    s_i_index = s_i_we_care.index(s)
+                    e_i = e_i_we_care[s_i_index]
+
+                    x = subtract_vectors(y,e_i)
+                    break
+
+    else:
+        # x = y if the word is correct OR if the
+        # error(s) was/were not in the info symbol
+        x = y
+
+        y = [y]
+        s = mult(y,H_T)
+
+        if s != [n_minus_k_zeroes]:
+            s = s[0]
+            y = y[0]
+
+            if s in s_i_we_care:
+                s_i_index = s_i_we_care.index(s)
+                e_i = e_i_we_care[s_i_index]
+
+                x = subtract_vectors(y,e_i)
 
     words_corrected.append(x)
     xs.append(x[:k])
