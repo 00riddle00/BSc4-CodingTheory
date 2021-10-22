@@ -3,9 +3,9 @@ import copy
 import math
 import random
 
-#################################################
+# ====================================
 # Helper functions
-#################################################
+# ====================================
 
 def nCr(n,r):
     return \
@@ -23,9 +23,9 @@ def prob_d_cond_c(p,d,c):
         t*=p[c[i]][d[i]]
     return t
 
-#################################################
-# Functions
-#################################################
+# ====================================
+# Main functions
+# ====================================
 
 ## Calculate Hamming distance
 ## h(u,v), u,v in F_p_k
@@ -53,19 +53,17 @@ def errfix_count(d):
 def get_Aq_bounds(q,n,d):
     return [(q**n) / V_q_r(q,d-1), (q**n) / V_q_r(q,t)]
 
-## Generate all k-length words from F_p
+## Generate all K-length code words from F_p
 ## F_p = {0,1,2,3,...,p-1}
 ## Result: F_p_k
-def generate_all_codes(n, arr, i):
-    if i == n:
+def generate_all_codes(K, p, arr, i):
+    if i == K:
         all_codes.append(''.join(str(e) for e in arr))
         return
 
-    arr[i] = 0
-    generate_all_codes(n, arr, i + 1)
-
-    arr[i] = 1
-    generate_all_codes(n, arr, i + 1)
+    for j in range(p):
+        arr[i] = j
+        generate_all_codes(K, p, arr, i + 1)
 
 # Run this function multiple times while searching
 # for the longest code
@@ -105,9 +103,9 @@ def remove_from_circle():
             print(len(codes))
             print()
 
-#################################################
+# ====================================
 # Main
-#################################################
+# ====================================
 
 # [1] find the largest code M, given the the length n
 # and minimum distance d.
@@ -133,7 +131,7 @@ print()
 all_codes = []
 arr = [None] * n
 
-generate_all_codes(n, arr, 0)
+generate_all_codes(n, q, arr, 0)
 
 #remove_from_circle()
 #remove_from_circle()
