@@ -1,6 +1,33 @@
 
 # ====================================
-# Functions
+# Helper functions
+# ====================================
+
+## Generate all K-length words from F_p
+## F_p = {0,1,2,3,...,p-1}
+## Result: F_p_k
+def generate_all_words(K, p, arr, i):
+    if i == K:
+        all_codes.append(''.join(str(e) for e in arr))
+        return
+
+    for j in range(p):
+        arr[i] = j
+        generate_all_words(K, p, arr, i + 1)
+
+# Matrix multiplication
+def mult(M,N):
+    result = [[0 for j in range(len(N[0]))] for i in range(len(M))]
+
+    for i in range(len(M)):
+        for j in range(len(N[0])):
+            for l in range(len(N)):
+                result[i][j] = (result[i][j] + M[i][l] * N[l][j]) % q
+
+    return result
+
+# ====================================
+# Main functions
 # ====================================
 
 # get code's weights distribution A
@@ -22,7 +49,9 @@ def w_L_in_McWilliams_RHS(A):
     return w_L_RHS
 
 # Probability of deception for any code word
-# (calculated for '000000' but applies to any code word)
+# (calculated for zeroeth word '00...0', but
+# applies to any other code word as well)
+#
 # p - distortion probability
 def p_deception(A, p):
     A_dict = {
@@ -43,7 +72,7 @@ n=6 # length of code word
 # Part 1
 # =====================
 
-# We need to weight the code L, given it's control
+# We need to weigh the code L, given it's control
 # matrix (=gen. matrix of its dual code)
 
 # We also need to find the probability of deception,
@@ -62,12 +91,18 @@ L_size = q^k
 # Composing L's dual code
 L_dual = []
 
-for i in range(0,q):
-    for j in range(0,q):
-        c=[]
-        for l in range(0,n):
-            c.append((i*H[0][l]+j*H[1][l])%q)
-        L_dual.append(c)
+# generate all symbol sequences of
+# length k_dual from alphabet q
+all_codes = []
+arr = [None] * k_dual
+generate_all_words(k_dual, q, arr, 0)
+
+all_seqs = all_codes # just for naming
+all_seqs_as_matrices = [[[int(x) for x in list(seq)]] for seq in all_seqs]
+
+for seq in all_seqs_as_matrices:
+    word = mult(seq, H)[0]
+    L_dual.append(word)
 
 assert len(L_dual) == L_dual_size
 
@@ -81,6 +116,9 @@ w_L_dual = w_L_in_McWilliams_RHS(A_L_dual)
 w_L = expand(w_L_dual)/L_dual_size
 
 A_L = w_L.list()
+while len(A_L) < (n+1):
+    A_L.append(0)
+
 assert sum(A_L) == L_size
 
 print('weight | number of code words')
@@ -95,6 +133,9 @@ print()
 # =====================
 # Part 2
 # =====================
+
+q=5 # alphabet size
+n=6 # length of code word
 
 # We need to weigh a self-dual code
 
