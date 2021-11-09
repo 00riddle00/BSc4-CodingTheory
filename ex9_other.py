@@ -66,13 +66,12 @@ G = [[1, 0, 0, 0, 4, 1],
 # Kanale arba vienas simbolis išsikraipė, arba vienas ar du išsitrynė.
 # Gauti iš kanalo žodžiai:
 
-words_received = \
-d0 = [2, 2, 0, 1, 0, 1]
-d1 = [1, 4, '*', '*', 4, 2]
-d2 = [4, 0, 4, 2, 3, 3]
-d3 = [2, 3, 0, 0, 0, 3]
-d4 = [3, 4, '*', 4, '*', 4]
-d5 = [0, 2, 0, 4, 3, 0]
+d0 = [0, 2, 0, 0, 4, 0]
+d1 = [3, '*', 4, 1, 1, 1]
+d2 = [1, 0, 2, 3, 2, 4]
+d3 = [3, 4, 3, 4, 4, 2]
+d4 = [3, 4, 3, '*', '*', 4]
+d5 = [0, 3, 0, 3, 3, 0]
 
 # Ištaisykite iškraipymus ir atkurkite siųstą žodį
 
@@ -103,40 +102,44 @@ print()
 
 print(syndromes)
 
-d0[3] = (d0[3] - 2) % q
-d2[1] = (d2[1] - 4) % q
-d3[1] = (d3[1] - 4) % q
-d5[3] = (d5[3] - 2) % q
+d0[0] = (d0[0] - 3) % q
+d3[0] = (d3[0] - 2) % q
+d5[1] = (d5[1] - 1) % q
 
-#================
-# Case 2
-#================
+#===============
+# Case 2.1
+#===============
 
-var('x','y')
-d1 = [1, 4, x, y, 4, 2]
+var('x')
+d1 = [3, x, 4, 1, 1, 1]
+
 # NOTE: here matrix multiplication is
 # performed without modulo q
 eq = mult_without_modulo([d1],H_T)[0]
+
+solution = solve_mod([eq[0]==0],q)
+
+x = int(solution[0][0])
+
+d1 = [3, x, 4, 1, 1, 1]
+
+#================
+# Case 2.2
+#================
+
+var('x','y')
+d4 = [3, 4, 3, x, y, 4]
+
+# NOTE: here matrix multiplication is
+# performed without modulo q
+eq = mult_without_modulo([d4],H_T)[0]
 
 solution = solve_mod([eq[0]==0,eq[1]==0],q)
 
 x = int(solution[0][0])
 y = int(solution[0][1])
 
-d1 = [1, 4, x, y, 4, 2]
-
-#-----------------
-
-var('x','y')
-d4 = [3, 4, x, 4, y, 4]
-eq = mult_without_modulo([d4],H_T)[0]
-
-solution = solve([eq[0]==0,eq[1]==0],x,y)
-
-x = int(solution[0][0].rhs()) % q
-y = int(solution[0][1].rhs()) % q
-
-d4 = [3, 4, x, 4, y, 4]
+d4 = [3, 4, 3, x, y, 4]
 
 #================
 # Results
